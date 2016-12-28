@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 
 
-cam=int(raw_input("Enter Camera Index : "))
-cap=cv2.VideoCapture(cam)
+#cam=int(raw_input("Enter Camera Index : "))
+cap=cv2.VideoCapture(0)
 i=1
 j=1
 name=""
@@ -46,8 +46,11 @@ while(cap.isOpened()):
 	mask = cv2.inRange(blur, skin_ycrcb_min, skin_ycrcb_max)
 	#gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 	#ret,mask = cv2.threshold(gray.copy(),20,255,cv2.THRESH_BINARY)
-	contours,hierarchy = cv2.findContours(mask.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+	_,contours,hierarchy = cv2.findContours(mask.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 	cnt=getMaxContour(contours,40)
+
+	imgT = 0
+
 	if cnt!=None:
 		x,y,w,h = cv2.boundingRect(cnt)
 		imgT=img1[y:y+h,x:x+w]
@@ -69,7 +72,7 @@ while(cap.isOpened()):
 				j=1
 			j=1
 			i+=1
-		
+
 
 cap.release()        
 cv2.destroyAllWindows()

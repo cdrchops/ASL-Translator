@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 from numpy.linalg import norm
-svm_params = dict( kernel_type = cv2.SVM_RBF,
-                    svm_type = cv2.SVM_C_SVC,
+svm_params = dict( kernel_type = cv2.ml.SVM_RBF,
+                    svm_type = cv2.ml.SVM_C_SVC,
                     C=2.67, gamma=5.383 )
 
 def preprocess_hog(digits):
@@ -59,8 +59,9 @@ def trainSVM(num):
 	print('training SVM...')
 	print len(labels)
 	print len(samples)
-	model = cv2.SVM()
-	model.train(samples,  labels,params=svm_params)
+	model = cv2.ml.SVM_create()#cv2.SVM()
+	model.train(samples, cv2.ml.ROW_SAMPLE, labels)
+	#model.train(samples, labels, params=svm_params)
 	return model
 
 def testSVM(num):
@@ -83,8 +84,9 @@ count=0.0
 k=0
 for i in test_images:
 	test_sample=hog_single(i)
-	resp=model.predict_all(test_sample).ravel()
-	#print (int)(resp[0])
+	resp = model.predict(test_sample)[1].ravel()
+	# resp=model.predict(test_sample)#.ravel()
+	print (int)(resp[0])
 	if test_labels[k]==(int)(resp[0]):
 		count+=1.0
 	k+=1

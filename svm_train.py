@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 from numpy.linalg import norm
-svm_params = dict( kernel_type = cv2.SVM_RBF,
-                    svm_type = cv2.SVM_C_SVC,
+svm_params = dict( kernel_type = cv2.ml.SVM_RBF,
+                    svm_type = cv2.ml.SVM_C_SVC,
                     C=2.67, gamma=5.383 )
 class StatModel(object):
     def load(self, fn):
@@ -13,14 +13,16 @@ class StatModel(object):
 
 class SVM(StatModel):
     def __init__(self, C = 1, gamma = 0.5):
-        self.model = cv2.SVM()
+        self.model = cv2.ml.SVM_create()#cv2.ml.SVM()
         # self.model.setGamma(gamma)
         # self.model.setC(C)
         # self.model.setKernel(cv2.SVM_RBF)
         # self.model.setType(cv2.SVM_C_SVC)
 
     def train(self, samples, responses):
-        self.model.train(samples,  responses,params=svm_params) # inbuilt training function 
+		self.model.train(samples, cv2.ml.ROW_SAMPLE, responses)
+		#self.model.train_auto(samples, cv2.ml.ROW_SAMPLE, responses)
+        #self.model.train(samples, responses, params=svm_params) # inbuilt training function
 
     def predict(self, samples):
         return self.model.predict_all(samples).ravel()
